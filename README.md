@@ -5,6 +5,7 @@ Muestra, en tiempo real, las métricas y los logs que produce el proxy de loggin
 
 - **Stack:** React 19 · Vite 8 · Tailwind CSS 4 · Recharts 3
 - **Backend:** [MonitoringSystemBackend](https://github.com/Juanescuaran2041/MonitoringSystemBackend) (Spring Boot)
+- **API activa:** https://inventario-service-backend.onrender.com
 - **Despliegue:** Vercel
 
 > El código está en inglés (componentes, hooks, variables); la documentación, en español.
@@ -20,6 +21,7 @@ Muestra, en tiempo real, las métricas y los logs que produce el proxy de loggin
 | Tabla de logs en tiempo real con polling cada 3 segundos | `components/logs/LogsTable.jsx` ← `hooks/useServiceLogs.js` + `usePolling.js` |
 | Filtros por servicio, estado (SUCCESS/ERROR) y rango de fechas | `components/logs/LogFilters.jsx` |
 | Botón "Simular carga" que dispara la simulación y actualiza el dashboard | `components/dashboard/SimulateLoadButton.jsx` |
+| Estado de conexión y catálogo del backend | `hooks/useApiHealth.js` → `GET /api/health` |
 | Al hacer clic en un log, expandir detalles: parámetros de entrada y respuesta completa | `components/logs/LogRow.jsx` → `LogDetails.jsx` |
 | Indicador visual en rojo si la tasa de error supera el 15% | `ServiceCard.jsx`, usando el campo `degraded` del backend |
 
@@ -57,10 +59,11 @@ npm run preview   # sirve el build
 src/
 ├── api/                      # única capa que habla HTTP
 │   ├── apiClient.js          # fetch + manejo de errores + base URL
-│   ├── metricsApi.js         # getSummary, getLogs, simulateLoad
+│   ├── metricsApi.js         # getHealth, getSummary, getLogs, simulateLoad
 │   └── types.js              # typedefs JSDoc del contrato del backend
 ├── hooks/
-│   ├── usePolling.js         # ejecuta algo cada N ms, con limpieza y abort
+│   ├── usePolling.js         # refresco secuencial, limpieza y abort
+│   ├── useApiHealth.js       # disponibilidad y catálogo de servicios
 │   ├── useMetricsSummary.js  # métricas por servicio
 │   ├── useServiceLogs.js     # logs filtrados y paginados
 │   └── useResponseTimeSeries.js  # últimas 20 llamadas por servicio para la gráfica
@@ -89,19 +92,21 @@ src/
 | Sin valores mágicos | 3 s de polling, 20 llamadas y 20 filas viven en `constants.js` |
 | Configuración por entorno | `VITE_API_URL`, nunca una URL escrita en el código |
 | Estados explícitos | Cada vista maneja *loading*, *error* y *vacío*, no solo el camino feliz |
-| Limpieza de efectos | `usePolling` limpia el `setInterval` y aborta la petición en vuelo al desmontar |
+| Limpieza de efectos | `usePolling` espera cada respuesta, limpia el `setTimeout` y aborta la petición en vuelo al desmontar |
 | Peticiones abortadas ≠ errores | `isAbortError` evita mostrar errores falsos al desmontar o cambiar filtros |
 | Inmutabilidad | El estado se reemplaza, nunca se muta |
 | `key` estable | `key={log.requestId}`, el UUID que genera el proxy |
 | Estado en el nivel correcto | La fila expandida es estado local de `LogsTable`; los filtros, de la página |
 | Nomenclatura | `PascalCase` componentes · `camelCase` funciones · `useX` hooks · `UPPER_SNAKE_CASE` constantes |
-| Accesibilidad | Tabla semántica con `<caption>`, `aria-expanded` en la fila expandible, foco visible, teclado (Enter/Espacio) y el color nunca como único indicador |
+| Accesibilidad | Tabla semántica con `<caption>`, control de expansión con teclado, foco visible y el color nunca como único indicador |
 | Tipado ligero | JSDoc en la capa de API y en las props, sin añadir un compilador |
 
 ---
 
 ## 5. Despliegue en Vercel
 
-1. Importar el repositorio (Vercel detecta Vite: build `npm run build`, salida `dist`).
-2. En *Settings → Environment Variables* definir `VITE_API_URL=https://<dominio-del-backend>`.
-3. En el backend, permitir ese origen con `MONITORING_CORS_ALLOWED_ORIGINS=https://<tu-app>.vercel.app`.
+1. Importar este repositorio en Vercel. Vercel detecta Vite automáticamente: build `npm run build`, salida `dist`.
+2. En *Settings → Environment Variables* definir `VITE_API_URL=https://inventario-service-backend.onrender.com` para Preview y Production.
+3. En Render, puedes restringir CORS con `MONITORING_CORS_ALLOWED_ORIGINS=https://<tu-app>.vercel.app` cuando tengas el dominio de Vercel.
+
+El backend gratuito puede tardar cerca de un minuto en despertar después de un periodo sin tráfico. El indicador `API disponible` del encabezado confirma que `/api/health` responde.
