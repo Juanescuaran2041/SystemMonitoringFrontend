@@ -9,6 +9,14 @@ export function getSummary(signal) {
 }
 
 /**
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<import("./types").HealthResponse>}
+ */
+export function getHealth(signal) {
+  return request("/api/health", { signal });
+}
+
+/**
  * @param {import("./types").LogFilters & { page?: number, size?: number }} filters
  * @param {AbortSignal} [signal]
  * @returns {Promise<import("./types").LogPage>}

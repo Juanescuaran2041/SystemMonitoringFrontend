@@ -62,4 +62,10 @@
  * @property {string} [to] datetime-local value
  */
 
+/**
+ * @typedef {Object} HealthResponse
+ * @property {string} status
+ * @property {string[]} services
+ */
+
 export {};

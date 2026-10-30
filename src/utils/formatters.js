@@ -47,3 +47,17 @@ export function formatJson(value) {
     return String(value);
   }
 }
+
+const SERVICE_LABELS = {
+  inventory: "Inventario",
+  orders: "Pedidos",
+  payments: "Pagos",
+};
+
+/**
+ * @param {string} serviceId
+ * @returns {string} Spanish display name for a backend service id
+ */
+export function formatServiceName(serviceId) {
+  return SERVICE_LABELS[serviceId] ?? serviceId;
+}

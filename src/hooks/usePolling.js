@@ -21,15 +21,25 @@ export function usePolling(callback, intervalMs, deps = []) {
   }, [callback]);
 
   useEffect(() => {
-    const controller = new AbortController();
-    const tick = () => savedCallback.current(controller.signal);
+    let isActive = true;
+    let timerId;
+    let controller;
 
-    tick();
-    const timerId = setInterval(tick, intervalMs);
+    const tick = async () => {
+      controller = new AbortController();
+      try {
+        await savedCallback.current(controller.signal);
+      } finally {
+        if (isActive) timerId = setTimeout(tick, intervalMs);
+      }
+    };
+
+    void tick();
 
     return () => {
-      clearInterval(timerId);
-      controller.abort();
+      isActive = false;
+      clearTimeout(timerId);
+      controller?.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [intervalMs, ...deps]);

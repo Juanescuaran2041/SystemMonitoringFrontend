@@ -10,7 +10,7 @@
  */
 export function Panel({ title, description, actions, children }) {
   return (
-    <section className="rounded-xl border border-slate-800 bg-slate-900/60 p-5">
+    <section className="border border-slate-700 bg-slate-900 p-5">
       <header className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-slate-100">{title}</h2>

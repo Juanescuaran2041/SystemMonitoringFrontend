@@ -16,6 +16,7 @@ import { isAbortError, usePolling } from "./usePolling";
 export function useResponseTimeSeries() {
   const [series, setSeries] = useState([]);
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const refresh = useCallback(async (signal) => {
     try {
@@ -28,12 +29,14 @@ export function useResponseTimeSeries() {
       setError(null);
     } catch (fetchError) {
       if (!isAbortError(fetchError)) setError(fetchError.message);
+    } finally {
+      if (!signal?.aborted) setIsLoading(false);
     }
   }, []);
 
   usePolling(refresh, POLLING_INTERVAL_MS);
 
-  return { series, error, refresh };
+  return { series, isLoading, error, refresh };
 }
 
 /**

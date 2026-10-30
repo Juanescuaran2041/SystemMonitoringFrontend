@@ -25,7 +25,7 @@ export function SimulateLoadButton({ onFinished, onError }) {
 
   return (
     <Button onClick={run} disabled={isRunning}>
-      {isRunning ? "Simulating…" : `Simulate load (${SIMULATED_CALLS} calls)`}
+      {isRunning ? "Generando tráfico…" : `Simular tráfico (${SIMULATED_CALLS} llamadas)`}
     </Button>
   );
 }

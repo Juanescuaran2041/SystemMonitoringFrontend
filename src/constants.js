@@ -16,7 +16,7 @@ export const CALL_STATUSES = ["SUCCESS", "ERROR"];
 
 /** Line colour per service, shared by the chart and the service cards. */
 export const SERVICE_COLORS = {
-  inventory: "#38bdf8",
-  orders: "#a78bfa",
-  payments: "#fbbf24",
+  inventory: "#23336e",
+  orders: "#972895",
+  payments: "#c64a2a",
 };

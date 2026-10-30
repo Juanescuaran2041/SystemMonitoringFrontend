@@ -1,7 +1,48 @@
 @import "tailwindcss";
 
+@theme {
+  --color-slate-950: #f3f7fa;
+  --color-slate-900: #ffffff;
+  --color-slate-800: #eaf0f4;
+  --color-slate-700: #d5dfe7;
+  --color-slate-600: #8090a1;
+  --color-slate-500: #718196;
+  --color-slate-400: #607286;
+  --color-slate-300: #40516d;
+  --color-slate-200: #2b3c6f;
+  --color-slate-100: #1f2d66;
+  --color-sky-500: #ff6437;
+  --color-sky-400: #ff815f;
+  --color-emerald-300: #167252;
+  --color-emerald-600: #167252;
+  --color-rose-200: #9f293b;
+  --color-rose-300: #aa2e40;
+  --color-amber-500: #a86513;
+}
+
+:root {
+  color-scheme: light;
+  font-family: "Segoe UI", Bahnschrift, ui-sans-serif, system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  background: #f3f7fa;
+  color: #1f2d66;
+}
+
 body {
+  min-width: 320px;
+  min-height: 100vh;
   margin: 0;
-  background-color: #020617; /* slate-950, avoids a white flash before React mounts */
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #f3f7fa;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: #972895;
+  color: #ffffff;
 }
