@@ -1,0 +1,12 @@
+/**
+ * @param {{ message: string | null }} props
+ */
+export function ErrorMessage({ message }) {
+  if (!message) return null;
+
+  return (
+    <p role="alert" className="rounded-lg border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+      {message}
+    </p>
+  );
+}
